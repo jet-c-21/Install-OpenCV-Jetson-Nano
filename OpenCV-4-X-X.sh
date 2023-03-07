@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 use_sudo() {
   local cmd="echo ${sudo_pwd} | sudo -S "
   for param in "$@"; do cmd+="${param} "; done
@@ -7,8 +8,6 @@ use_sudo() {
 
 echo "Please enter your sudo password:"
 read -s sudo_pwd
-
-set -e
 
 start_time=$(date +%s) # be careful +%s should separate with data
 
@@ -64,25 +63,36 @@ cd build
 
 # run cmake
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
+  -D CUDA_ARCH_BIN=${GPU_ARCH_BIN} \
+  -D CUDA_ARCH_PTX="" \
+  -D CMAKE_INSTALL_PREFIX=/usr \
+  -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules \
+  -D PYTHON3_PACKAGES_PATH=/usr/lib/python3/dist-packages \
+  -D EIGEN_INCLUDE_PATH=/usr/include/eigen3 \
   -D ENABLE_NEON=ON \
+  -D CUDA_FAST_MATH=ON \
+  -D ENABLE_FAST_MATH=ON \
+  -D OPENCV_DNN_CUDA=ON \
   -D OPENCV_ENABLE_NONFREE=ON \
   -D OPENCV_GENERATE_PKGCONFIG=ON \
-  -D OPENCV_DNN_CUDA=ON \
-  -D WITH_CUBLAS=ON \
   -D WITH_CUDA=ON \
   -D WITH_CUDNN=ON \
-  -D WITH_EIGEN=ON \
+  -D WITH_CUBLAS=ON \
+  -D WITH_OPENCL=OFF \
+  -D WITH_QT=ON \
+  -D WITH_OPENMP=ON \
   -D WITH_FFMPEG=ON \
   -D WITH_GSTREAMER=ON \
-  -D WITH_LIBV4L=ON \
-  -D WITH_OPENCL=OFF \
-  -D WITH_OPENMP=ON \
-  -D WITH_QT=OFF \
   -D WITH_TBB=ON \
+  -D WITH_EIGEN=ON \
   -D WITH_V4L=ON \
+  -D WITH_LIBV4L=ON \
+  -D INSTALL_C_EXAMPLES=OFF \
+  -D INSTALL_PYTHON_EXAMPLES=ON \
+  -D BUILD_TIFF=ON \
   -D BUILD_TESTS=OFF \
-  -D BUILD_EXAMPLES=OFF \
   -D BUILD_TBB=ON \
+  -D BUILD_EXAMPLES=OFF \
   -D BUILD_opencv_cudaoptflow=ON \
   -D BUILD_opencv_cudacodec=ON \
   -D BUILD_opencv_cudev=ON \
